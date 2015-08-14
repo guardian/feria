@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+basedir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
+version=$(sed -e 's/ *version *:= *"\(.*\)" */\1/p' -n $basedir/build.sbt)
+jar=$basedir/target/scala-2.11/feria-assembly-$version.jar
+
+if [ ! -e "$jar" ]; then
+  pushd $basedir
+  sbt assembly
+  popd
+fi
+
+java -jar $jar "$@"
