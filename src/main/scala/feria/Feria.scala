@@ -47,6 +47,7 @@ object Feria extends App {
       if (driver.getCurrentUrl.contains("AccountChooser"))
           driver.findElementByXPath("//button[contains(@value,'guardian.co.uk')]").click()
 
+      // What luck! There's only one textarea on the page, and it happens to be the element we want
       Try(driver.findElement(By.tagName("textarea"))) match {
         case Success(textarea) =>
           val commands = textarea.getAttribute("value").split("\n")
