@@ -43,8 +43,10 @@ object Feria extends App {
     try {
       val permissionId = s"${config.profile}-${config.access}"  
       driver.get(s"https://janus.gutools.co.uk/credentials?permissionId=$permissionId")
+      // If you are signed in to multiple accounts you will be redirected to an 'Account Chooser' page
+      if (driver.getCurrentUrl.contains("AccountChooser"))
+          driver.findElementByXPath("//button[contains(@value,'guardian.co.uk')]").click()
 
-      // What luck! There's only one textarea on the page, and it happens to be the element we want
       Try(driver.findElement(By.tagName("textarea"))) match {
         case Success(textarea) =>
           val commands = textarea.getAttribute("value").split("\n")
