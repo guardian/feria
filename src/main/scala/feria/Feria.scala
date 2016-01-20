@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 import scala.util._
 import scala.sys.process._
 
-case class Config(profile: String = "", access: String = "dev")
+case class Config(profile: String = "", access: String = "dev", alias: Option[String] = None)
 
 object Feria extends App {
 
@@ -19,6 +19,9 @@ object Feria extends App {
   val optionParser = new OptionParser[Config]("feria") {
     opt[String]("access") action { (a, cfg) => cfg.copy(access = a) 
     } text s"The type of access you need. One of $validAccessValuesString. Default = dev"
+
+    opt[String]("alias") action { (a, cfg) => cfg.copy(alias = Option(a))
+    } text s"The alias the profile will be installed under locally"
 
     arg[String]("profile") action { (p, cfg) => cfg.copy(profile = p) 
     } text "The AWS profile ID, e.g. capi"
@@ -46,6 +49,11 @@ object Feria extends App {
       // If you are signed in to multiple accounts you will be redirected to an 'Account Chooser' page
       if (driver.getCurrentUrl.contains("AccountChooser"))
           driver.findElementByXPath("//button[contains(@value,'guardian.co.uk')]").click()
+
+      config.alias.filter(_.nonEmpty).foreach { alias =>
+        val profileField = driver.findElement(By.id("aws-profile-id"))
+        profileField.clear()
+        profileField.sendKeys(alias)}
 
       // What luck! There's only one textarea on the page, and it happens to be the element we want
       Try(driver.findElement(By.tagName("textarea"))) match {
