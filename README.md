@@ -29,6 +29,8 @@ Usage: feria [options] profile
 
   --access <value>
         The type of access you need. One of [dev, admin, cloudformation]. Default = dev
+  --alias <value>
+        The alias the profile will be installed under locally
   profile
         The AWS profile ID, e.g. capi
 ```
