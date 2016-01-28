@@ -10,7 +10,7 @@ Uses Selenium to access Janus, retrieve developer credentials for a given AWS ac
 
 1. Clone this repo
 
-2. (Optional) Add the bin directory to your `PATH`
+2. (Optional) Add the bin directory to your `PATH` by running [`install.sh`](./install.sh)
 
 ## How to run
 
