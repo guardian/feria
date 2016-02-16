@@ -51,6 +51,7 @@ object Feria extends App {
       Try(driver.findElement(By.tagName("textarea"))) match {
         case Success(textarea) =>
           val commands = textarea.getAttribute("value").split("\n")
+            .map(_.replaceAllLiterally("""&& \""", "").trim)
           for (cmd <- commands) {
             val exitCode = cmd.!
             println(s"Executed command. Command = [$cmd], exit code = [$exitCode]")
