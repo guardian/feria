@@ -42,7 +42,7 @@ object Feria extends App {
 
     try {
       val permissionId = s"${config.profile}-${config.access}"  
-      driver.get(s"https://janus.gutools.co.uk/credentials?permissionId=$permissionId")
+      driver.get(s"https://janus.gutools.co.uk/credentials?permissionId=$permissionId&tzOffset=1")
       // If you are signed in to multiple accounts you will be redirected to an 'Account Chooser' page
       if (driver.getCurrentUrl.contains("AccountChooser"))
           driver.findElementByXPath("//button[contains(@value,'guardian.co.uk')]").click()
