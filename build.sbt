@@ -1,6 +1,6 @@
 scalaVersion := "2.11.7"
 
-version := "0.2.2"
+version := "0.2.3"
 
 libraryDependencies ++= Seq(
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0",
