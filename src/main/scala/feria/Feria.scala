@@ -1,14 +1,13 @@
 package feria
 
+import org.joda.time.{DateTime, DateTimeZone}
 import org.openqa.selenium._
 import org.openqa.selenium.firefox._
 import org.openqa.selenium.firefox.internal._
-
 import scopt._
 
-import scala.collection.JavaConverters._
-import scala.util._
 import scala.sys.process._
+import scala.util._
 
 case class Config(profile: String = "", access: String = "dev")
 
@@ -41,8 +40,9 @@ object Feria extends App {
     }
 
     try {
-      val permissionId = s"${config.profile}-${config.access}"  
-      driver.get(s"https://janus.gutools.co.uk/credentials?permissionId=$permissionId")
+      val permissionId = s"${config.profile}-${config.access}"
+      val timeZoneOffset = DateTimeZone.getDefault.getOffset(DateTime.now) / 3600000
+      driver.get(s"https://janus.gutools.co.uk/credentials?permissionId=$permissionId&tzOffset=$timeZoneOffset")
       // If you are signed in to multiple accounts you will be redirected to an 'Account Chooser' page
       if (driver.getCurrentUrl.contains("AccountChooser"))
           driver.findElementByXPath("//button[contains(@value,'guardian.co.uk')]").click()
