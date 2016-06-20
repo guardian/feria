@@ -13,7 +13,7 @@ case class Config(profile: String = "", access: String = "dev")
 
 object Feria extends App {
 
-  val validAccessValues = Set("dev", "cloudformation", "s3-all", "s3-read", "lambda", "kinesis-read")
+  val validAccessValues = Set("dev", "cloudformation", "s3-all", "s3-read", "lambda", "kinesis-read", "sqs-consumer")
   val validAccessValuesString = validAccessValues.mkString("[", ", ", "]")
   val optionParser = new OptionParser[Config]("feria") {
     opt[String]("access") action { (a, cfg) => cfg.copy(access = a) 
