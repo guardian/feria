@@ -4,6 +4,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import org.openqa.selenium._
 import org.openqa.selenium.firefox._
 import org.openqa.selenium.firefox.internal._
+import org.openqa.selenium.remote.DesiredCapabilities
 import scopt._
 
 import scala.sys.process._
@@ -34,8 +35,12 @@ object Feria extends App {
 
   def run(config: Config): Unit = {
     val driver = {
+      val capabilities = DesiredCapabilities.firefox()
+      // https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver
+      capabilities.setCapability("marionette", true)
       // Use default profile so we are logged in to Google
       val firefoxProfile = new ProfilesIni().getProfile("default")
+      capabilities.setCapability(FirefoxDriver.PROFILE, firefoxProfile)
       new FirefoxDriver(firefoxProfile)
     }
 
