@@ -25,12 +25,12 @@ It will take a while the first time you run it, because it has to build itself.
 ## Usage
 
 ```
-Usage: feria [options] profile
+Usage: feria [options] profiles
 
   --access <value>
-        The type of access you need. One of [dev, admin, cloudformation]. Default = dev
-  profile
-        The AWS profile ID, e.g. capi
+        The type of access you need. One of [s3-all, lambda, dev, cloudformation, sqs-consumer, kinesis-read, s3-read]. Default = dev
+  profiles
+        The AWS profile ID(s), e.g. capi frontend
 ```
 
 ## Requirements/restrictions

@@ -19,8 +19,8 @@ object Feria extends App {
     opt[String]("access") action { (a, cfg) => cfg.copy(access = a) 
     } text s"The type of access you need. One of $validAccessValuesString. Default = dev"
 
-    arg[String]("profile").required.unbounded() action { (p, cfg) => cfg.copy(profiles = cfg.profiles :+ p)
-    } text "The AWS profile ID, e.g. capi"
+    arg[String]("profiles").required.unbounded() action { (p, cfg) => cfg.copy(profiles = cfg.profiles :+ p)
+    } text "The AWS profile ID(s), e.g. capi frontend"
 
     checkConfig { c =>
       if (!validAccessValues(c.access))
