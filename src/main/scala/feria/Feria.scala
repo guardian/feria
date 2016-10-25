@@ -4,6 +4,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import org.openqa.selenium._
 import org.openqa.selenium.firefox._
 import org.openqa.selenium.firefox.internal._
+import org.openqa.selenium.remote.DesiredCapabilities
 import scopt._
 
 import scala.sys.process._
@@ -12,6 +13,13 @@ import scala.util._
 case class Config(profiles: Seq[String] = Nil, access: String = "dev")
 
 object Feria extends App {
+  val os = System.getProperty("os.name")
+  val arch = System.getProperty("os.arch")
+
+  val geckodriverPath = (os, arch) match {
+    case ("Mac OS X", "x86_64") => Some("./bin/geckodriver-osx")
+    case _ => None
+  }
 
   val validAccessValues = Set("dev", "cloudformation", "s3-all", "s3-read", "lambda", "kinesis-read", "sqs-consumer")
   val validAccessValuesString = validAccessValues.mkString("[", ", ", "]")
@@ -33,14 +41,19 @@ object Feria extends App {
   optionParser.parse(args, Config()) map { config => run(config) }
 
   def run(config: Config): Unit = {
-    val driver = {
-      // Use default profile so we are logged in to Google
-      val firefoxProfile = new ProfilesIni().getProfile("default")
-      new FirefoxDriver(firefoxProfile)
-    }
+    val maybeDriver = geckodriverPath.map(binary => {
+      System.setProperty("webdriver.gecko.driver", binary)
 
-    try {
-      for(profile <- config.profiles) {
+      // Use default profile so we are logged in to Google
+      val capabilities = new FirefoxOptions()
+        .setProfile(new ProfilesIni().getProfile("default"))
+        .addTo(DesiredCapabilities.firefox)
+
+      new FirefoxDriver(capabilities)
+    })
+
+    for(profile <- config.profiles; driver <- maybeDriver) {
+      try {
         val permissionId = s"${profile}-${config.access}"
         val timeZoneOffset = DateTimeZone.getDefault.getOffset(DateTime.now) / 3600000
         driver.get(s"https://janus.gutools.co.uk/credentials?permissionId=$permissionId&tzOffset=$timeZoneOffset")
@@ -55,15 +68,18 @@ object Feria extends App {
               .map(_.replaceAllLiterally("""&& \""", "").trim)
             for (cmd <- commands) {
               val exitCode = cmd.!
-                println(s"Executed command. Command = [$cmd], exit code = [$exitCode]")
+              println(s"Executed command. Command = [$cmd], exit code = [$exitCode]")
             }
           case _ =>
             Console.err.println("Couldn't find the textarea I was looking for. Has your Google login expired?")
         }
+      } finally {
+        driver.quit()
       }
-    } finally {
-      driver.quit()
     }
+
+    if (maybeDriver.isEmpty)
+      Console.err.println(s"Couldn't find a geckodriver binary for $os $arch.")
   }
 
 }
