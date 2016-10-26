@@ -10,4 +10,6 @@ if [ ! -e "$jar" ]; then
   popd
 fi
 
+pushd $basedir
 java -jar $jar "$@"
+popd
