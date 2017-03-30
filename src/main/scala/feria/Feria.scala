@@ -18,6 +18,7 @@ object Feria extends App {
 
   val geckodriverPath = (os, arch) match {
     case ("Mac OS X", "x86_64") => Some("./bin/geckodriver-osx")
+    case ("Linux", "amd64") => Some("./bin/geckodriver-linux")
     case _ => None
   }
 
